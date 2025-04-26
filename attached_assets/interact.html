@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meredith Duxbury Profile</title>
+    <!-- Google Fonts - Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- slick -->
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css'>
+    <style>
+        /* General body styling */
+        body {
+            background-color: #000000;
+            /* background-color: #f5e6e0; */
+            font-family: 'Nunito', Arial, sans-serif;
+            background-image: url('images/back1a.png');
+		    background-repeat: no-repeat;
+		    background-attachment: fixed;
+		    background-position: center center;
+		    background-size: cover;
+        }
+        /* common css */
+        .section {
+            border-bottom: 1px solid #000000;
+            /* border-bottom: 1px solid #C8B5B1; */
+        }
+        .detail-layout__background {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            -o-object-fit: cover;
+            object-fit: cover;
+            -o-object-position: top;
+            object-position: top;
+            opacity: .8;
+            filter: blur(104px);
+        }
+        .blur-bg > div {
+            position: relative;
+        }
+        .container {
+            max-width: 759px;
+        }
+        .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+            font-weight: bold;
+        }
+        .h1, h1 {
+            font-size: 3rem;
+        }
+        .section-header h3 {
+            margin-bottom: 0;
+        }
+        .sub-title h4 {
+            margin-bottom: 0;
+        }
+        /* profile */
+        .profile-wrap {
+            background-color: #000000;
+            /* background-color: #ddc7c3; */
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .profile-header h2 {
+            margin-top: 10px;
+            font-weight: 600; 
+        }
+        @media screen and (max-width: 479px) {
+            .profile-wrap {
+                padding: 30px !important;
+            }
+        }
+        /* click to scroll sectin */
+        .click-to-section swiper-slide {
+            width: auto !important;
+            display: flex; 
+            align-items: center;
+            cursor: pointer;
+        }
+        .click-to-section swiper-slide a {
+            opacity: .75;
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+        .click-to-section swiper-slide.active a {
+            background: linear-gradient(#1212121a, #1212121a), #aaa !important;
+            /* background: linear-gradient(#1212121a, #1212121a), #ddc7c3 !important; */
+            opacity: 1;
+        }
+        /* storefront-grid section */
+        .full-width-slider-section .product-item-wrap {
+            background: linear-gradient(#1212121a, #1212121a), #aaa !important;
+            /* background: linear-gradient(#1212121a, #1212121a), #ddc7c3 !important; */
+        }
+        .full-width-slider-section .product-item-img {
+            width: 140px;
+            height: 140px;
+            position: relative;
+        }
+        .full-width-slider-section .product-item-img > img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+        /* inline-grid-product-slider section */
+        .inline-grid-product-slider .slick-slide {
+            padding: 0 12px;
+        }
+        .inline-grid-product-slider .slick-list {
+            margin: 0 -12px;
+        }
+        .inline-grid-product-slider .product-item-img {
+            padding-top: 100%;
+            position: relative;
+        }
+        .inline-grid-product-slider .product-item-img > img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* shorts-video section */
+        .video-slider .slick-slide {
+            padding: 0 8px;
+        }
+        .shorts-video-wrap {
+            position: relative;
+            padding-bottom: 48.5%;
+            height: 0;
+        }
+        .shorts-video-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* arrows */
+        .arrows-wrap {
+            width: 70px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .arrows-wrap button {
+            background-color: transparent;
+            background-image: url(images/arrow-left.svg);
+            border: none;
+            font-size: 0;
+            width: 24px;
+            height: 24px;
+        }
+        .arrows-wrap button.slick-next {
+            background-color: transparent;
+            background-image: url(images/arrow-right.svg);
+            border: none;
+            font-size: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* footer */
+        .footer-content {
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        .footer-item {
+            padding: 5px 15px;
+        }
+        .footer-links {
+            font-size: 14px;
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="blur-bg">
+        <img class="detail-layout__background" src="images/blur-imgibg.jpeg" alt="avatar">
+        <div class="container">  
+
+            <div class="profile-wrap mt-3 mb-1 p-5">
+                 <div class="container p-1">
+                    <button class="btn btn-light mb-3 " onclick="history.back()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+                </svg> Back</button>
+
+                 <div class="profile-img rounded-4 d-inline-block mx-auto overflow-hidden mt-3">
+                        <img class="img-fluid" src="images/ai-game1a.png" alt="Meredith Duxbury">
+                    </div>
+                    <h1 class="text-white">AI GAME<span class="badge bg-primary">INTERACT</span></h1>
+
+                 <p class="text-white mt-3">What amazing places can you imagine yourself in with Meredith. We have created some samples below to choose from but you can also generate your own custom scenes. Take a look!</p>
+
+                  <h3 class="text-white mt-5 mb-3">Select a sample below:</h3>
+
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/vid1.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Visit space with me</h5>
+                             
+                          </div>
+                          
+                        </div>
+                    </div>
+                   
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/skydive.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Go SKYDIVING</h5>
+                            
+                          </div>
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/walk1.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Walk to Machu Pichu</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/lunch.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Or just take me for lunch</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/vid5.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Another Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+
+
+                    <h3 class="text-white mt-5 mb-3">Training with KIERAN</h3>
+
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <img src="video/k0.gif" class="card-img-top" alt="...">
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Original sample images / video</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k1.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k2.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k3.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k3a.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k4.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k5.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    <div class="sub-title d-flex align-items-center justify-content-between mt-3 pb-1">
+                        <div class="card text-white bg-dark h-100">
+                            <video class="card-img-top" playsinline autoplay muted loop >
+                              <source src="video/k6.mp4" type="video/mp4" />
+                            </video>
+                          
+                          <div class="card-body bg-dark ">
+                            <h5 class="card-title">Kieran Test</h5>
+                          </div>
+                          
+                        </div>
+                    </div>
+                    
+
+
+                <!-- footer -->
+
+                 <div class="footer pt-5">
+                     <hr class="text-white">
+                    <div class="footer-content d-flex align-items-center justify-content-between">
+                        <div class="footer-item">
+                            <a class="footer-links" href="https://komi.io/talent-privacy-policy" target="_blank" rel="noreferrer"> Privacy Policy</a>
+                        </div>
+                        <div class="footer-item">
+                            <a class="footer-links" href="https://vota.cloud"><img src="images/vota-logo.png" style="width: 80px"></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load jQuery first -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!-- Other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.slick/1.4.1/slick.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+    
+
+</body>
+</html>
