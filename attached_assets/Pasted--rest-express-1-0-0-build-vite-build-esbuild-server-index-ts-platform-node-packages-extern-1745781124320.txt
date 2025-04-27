@@ -1,0 +1,70 @@
+> rest-express@1.0.0 build
+> vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+
+vite v5.4.14 building for production...
+transforming (1) index.htmlBrowserslist: browsers data (caniuse-lite) is 6 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 1747 modules transformed.
+../dist/public/index.html                           0.98 kB │ gzip:   0.56 kB
+../dist/public/assets/dim-light-B25gj2Gs.png       66.47 kB
+../dist/public/assets/video-blur-BtOU5A-m.png      68.54 kB
+../dist/public/assets/face-small-BAdfgT8p.png      83.20 kB
+../dist/public/assets/face-covering-WtVA9r65.png   94.14 kB
+../dist/public/assets/top-of-page-Dt6VVG_W.png    185.28 kB
+../dist/public/assets/ai-game1-CeAf51uR.png       337.45 kB
+../dist/public/assets/index-u0p3cYya.css           63.09 kB │ gzip:  11.06 kB
+../dist/public/assets/index-D2TRHEKY.js           466.68 kB │ gzip: 148.26 kB
+✓ built in 5.28s
+
+  dist/index.js  96.2kb
+
+⚡ Done in 43ms
+root@replit:~/vota-app# # Restart with PM2
+pm2 restart vota-app  # Replace with your actual app name
+Use --update-env to update environment variables
+[PM2] Applying action restartProcessId on app [vota-app](ids: [ 0 ])
+[PM2] [vota-app](0) ✓
+┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐
+│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │
+├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤
+│ 0  │ vota-app           │ fork     │ 2    │ online    │ 0%       │ 19.9mb   │
+└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘
+root@replit:~/vota-app# # Check logs for errors
+pm2 logs vota-app
+[TAILING] Tailing last 15 lines for [vota-app] process (change the value with --lines option)
+/root/.pm2/logs/vota-app-error.log last 15 lines:
+0|vota-app |     _url: 'wss://localhost/v2',
+0|vota-app |     _req: null,
+0|vota-app |     [Symbol(shapeMode)]: false,
+0|vota-app |     [Symbol(kCapture)]: false
+0|vota-app |   },
+0|vota-app |   [Symbol(kType)]: 'error',
+0|vota-app |   [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+0|vota-app |       at internalConnectMultiple (node:net:1122:18)
+0|vota-app |       at afterConnectMultiple (node:net:1689:7) {
+0|vota-app |     code: 'ECONNREFUSED',
+0|vota-app |     [errors]: [ [Error], [Error] ]
+0|vota-app |   },
+0|vota-app |   [Symbol(kMessage)]: ''
+0|vota-app | }
+0|vota-app | API key does not start with "SG.".
+
+/root/.pm2/logs/vota-app-out.log last 15 lines:
+0|vota-app | > rest-express@1.0.0 start
+0|vota-app | > NODE_ENV=production node dist/index.js
+0|vota-app | 
+0|vota-app | SendGrid email service configured successfully with from email: kieran@plexusoft.ie
+0|vota-app | 6:54:51 PM [express] serving on port 3000
+0|vota-app | Video upload started, validating payload...
+0|vota-app | Video data size: 0.25 MB
+0|vota-app | Creating upload record for user 1...
+0|vota-app | 6:57:03 PM [express] POST /api/uploads 500 in 40ms :: {"message":"Failed to upload video","error":"U…
+0|vota-app | 
+0|vota-app | > rest-express@1.0.0 start
+0|vota-app | > NODE_ENV=production node dist/index.js
+0|vota-app | 
+0|vota-app | SendGrid email service configured successfully with from email: kieran@plexusoft.ie
+0|vota-app | 7:09:57 PM [express] serving on port 3000
+
+
