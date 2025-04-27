@@ -1,0 +1,7 @@
+[dev]
+name = "Start application"
+runOptions = ["runMainOnReconnect", "neverUnload"]
+command = ["npm", "run", "dev"]
+
+[dev.hints]
+restartable = true
