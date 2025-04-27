@@ -1,54 +1,54 @@
-import { pgTable, text, serial, timestamp, numeric, boolean, jsonb, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, timestamp, numeric, boolean, jsonb } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // Define tables first
 export const users = pgTable("users", {
-  id: integer("id").primaryKey(),
+  id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
   email: text("email"), // User's email for notifications
   faceImageUrl: text("face_image_url"), // URL to the extracted face image
-  processingStatus: text("processing_status"), // not_started, processing, completed, failed
+  processingStatus: text("processing_status").default("not_started"), // not_started, processing, completed, failed
   loraId: text("lora_id"), // Keep the LoraID field to preserve existing data
-  trainingStatus: text("training_status"), // Keep training_status to preserve existing data
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(), // without timezone to match DB
+  trainingStatus: text("training_status").default("not_started"), // Keep training_status to preserve existing data
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const videos = pgTable("videos", {
-  id: integer("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  id: serial("id").primaryKey(),
+  userId: numeric("user_id").notNull().references(() => users.id), // changed from serial to numeric to preserve existing data
   title: text("title").notNull(),
   prompt: text("prompt").notNull(),
   notificationEmail: text("notification_email"), // Email for sending completion notifications
   negativePrompt: text("negative_prompt"),
-  aspectRatio: text("aspect_ratio"), // 16:9, 9:16, 1:1
-  duration: numeric("duration"), // 5 or 10 seconds
-  cfgScale: numeric("cfg_scale"), // 0.0 to 1.0
-  videoUrl: text("video_url").notNull(), // Matches DB - required
+  aspectRatio: text("aspect_ratio").default("16:9"), // 16:9, 9:16, 1:1
+  duration: numeric("duration").default("5"), // 5 or 10 seconds
+  cfgScale: numeric("cfg_scale").default("0.5"), // 0.0 to 1.0
+  videoUrl: text("video_url"),
   thumbnailUrl: text("thumbnail_url"),
   rawVideoUrl: text("raw_video_url"), // Original video from Kling before face swap
-  status: text("status").notNull(), // processing, swapping, completed, failed
+  status: text("status").notNull().default("processing"), // processing, swapping, completed, failed
   errorMessage: text("error_message"),
   requestId: text("request_id"), // Request ID from Replicate
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(), // without timezone to match DB
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const userUploads = pgTable("user_uploads", {
-  id: integer("id").primaryKey(),
-  userId: integer("user_id"), // Match DB - not required in DB but should be in our app
+  id: serial("id").primaryKey(),
+  userId: numeric("user_id").notNull().references(() => users.id), // changed from serial to numeric to preserve existing data
   videoData: text("video_data").notNull(), // URL of the video file
   faceImageUrl: text("face_image_url"), // URL to the extracted face image
-  processingStatus: text("processing_status").notNull(), // pending, processing, completed, failed
+  processingStatus: text("processing_status").notNull().default("pending"), // pending, processing, completed, failed
   errorMessage: text("error_message"),
   metadata: jsonb("metadata"), // Store additional info like dimensions, duration, etc.
-  createdAt: timestamp("created_at", { mode: 'string', withTimezone: true }), // with timezone to match DB
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const apiUsage = pgTable("api_usage", {
-  id: integer("id").primaryKey(),
-  userId: integer("user_id").notNull(), // integer to match DB
+  id: serial("id").primaryKey(),
+  userId: numeric("user_id").notNull().references(() => users.id), // changed from serial to numeric to preserve existing data
   endpoint: text("endpoint").notNull(), // The API endpoint called (e.g., "train", "generate")
   requestId: text("request_id"), // Request ID from fal.ai if available
   requestPayloadSize: text("request_payload_size"), // Size of the request in bytes
@@ -57,16 +57,7 @@ export const apiUsage = pgTable("api_usage", {
   status: text("status").notNull(), // success, error
   errorMessage: text("error_message"), // Error message if status is error
   duration: text("duration"), // Duration of the API call in milliseconds
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(), // without timezone to match DB
-});
-
-// Add training_sessions table to preserve existing data
-export const trainingSessions = pgTable("training_sessions", {
-  id: integer("id").primaryKey(),
-  userId: integer("user_id").notNull(), // integer to match existing DB type
-  videoData: text("video_data").notNull(),
-  status: text("status").notNull(), // pending, processing, completed, failed
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(), // without timezone to match DB
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Now define relations
@@ -74,7 +65,6 @@ export const usersRelations = relations(users, ({ many }) => ({
   videos: many(videos),
   uploads: many(userUploads),
   apiUsages: many(apiUsage),
-  trainingSessions: many(trainingSessions),
 }));
 
 export const videosRelations = relations(videos, ({ one }) => ({
@@ -94,13 +84,6 @@ export const userUploadsRelations = relations(userUploads, ({ one }) => ({
 export const apiUsageRelations = relations(apiUsage, ({ one }) => ({
   user: one(users, {
     fields: [apiUsage.userId],
-    references: [users.id],
-  }),
-}));
-
-export const trainingSessionsRelations = relations(trainingSessions, ({ one }) => ({
-  user: one(users, {
-    fields: [trainingSessions.userId],
     references: [users.id],
   }),
 }));
@@ -172,5 +155,3 @@ export type UserUpload = typeof userUploads.$inferSelect;
 
 export type InsertApiUsage = z.infer<typeof insertApiUsageSchema>;
 export type ApiUsage = typeof apiUsage.$inferSelect;
-
-export type TrainingSession = typeof trainingSessions.$inferSelect;

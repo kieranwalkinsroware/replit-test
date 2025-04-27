@@ -197,8 +197,8 @@ debugRouter.get('/replicate/test-video-generation', async (req: Request, res: Re
     console.log(`[DEBUG] Testing video generation with prompt: "${prompt}" for userId: ${userId}`);
     
     // For development, we'll use a development mode that simulates video generation
-    // Use development mode since we've confirmed API token doesn't have model permissions
-    const useDevelopmentMode = true; // Using development mode to allow continued development
+    // Set to false to test if our new models work with the current API token
+    const useDevelopmentMode = false; // Temporarily testing real API with new public models
     
     if (useDevelopmentMode) {
       console.log('[DEBUG] Using development mode for video generation');
@@ -303,26 +303,8 @@ debugRouter.get('/replicate/generation-status/:predictionId', async (req: Reques
         status = 'processing';
       } else {
         status = 'succeeded';
-        
-        // Sample video URLs - a selection of free demo videos for testing
-        const sampleVideos = [
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',
-          'https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4'
-        ];
-        
-        // Deterministically select a video based on prediction ID and prompt
-        // This ensures the same prompt always produces the same video for consistency
-        const promptHash = req.query.prompt ? 
-          req.query.prompt.toString().split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
-        const index = (parseInt(predictionId.split('-')[1]) + promptHash) % sampleVideos.length;
-        
-        output = sampleVideos[index];
+        // Sample video URL - a free demo video for testing
+        output = 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
       }
       
       // Track simulated API usage
