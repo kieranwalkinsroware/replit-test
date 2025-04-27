@@ -16,8 +16,24 @@ export default function CameraPage() {
   
   // Handle video capture from the VideoUploader component
   const handleVideoCapture = (capturedVideoData: string) => {
+<<<<<<< HEAD
+    console.log('Video capture received in CameraPage, data length:', 
+      capturedVideoData ? Math.round(capturedVideoData.length / 1024) : 0, 'KB');
+    
+    // Reset error if any and set the video data
+    setError(null);
+    setVideoData(capturedVideoData);
+    
+    // Add a quick log to help debug state updates
+    setTimeout(() => {
+      // We can't use videoData directly here as it will still have the old value
+      // Instead, log a message that we should check the next render
+      console.log('Video data set in state, should be visible in next render');
+    }, 100);
+=======
     setVideoData(capturedVideoData);
     setError(null);
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
   };
   
   // Upload the video to the server

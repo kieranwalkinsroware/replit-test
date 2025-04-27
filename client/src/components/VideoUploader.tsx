@@ -46,8 +46,19 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
   
   // Check browser compatibility on mount
   useEffect(() => {
+<<<<<<< HEAD
+    // Check if we're in a secure context (required for camera access in many browsers)
+    const isSecureContext = window.isSecureContext;
+    
+    // Check if getUserMedia is supported 
+    const hasMediaDevices = !!(navigator.mediaDevices);
+    const hasGetUserMedia = hasMediaDevices && 
+      (typeof navigator.mediaDevices.getUserMedia !== 'undefined') && 
+      (isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '0.0.0.0');
+=======
     // Check if getUserMedia is supported
     const hasGetUserMedia = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     
     // Check if MediaRecorder is supported
     const hasMediaRecorder = typeof MediaRecorder !== 'undefined';
@@ -58,9 +69,22 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
     // Check if using mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
+<<<<<<< HEAD
+    // Check if we're inside a webview (affects camera permissions)
+    const isWebView = 
+      /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent) || 
+      /Android.*Version\/[0-9].[0-9].*Chrome.*Mobile.*Safari/i.test(navigator.userAgent) ||
+      navigator.userAgent.includes('WKWebView');
+    
+    // Set recommendation based on detected capabilities
+    const recommendUpload = !hasMediaRecorder || (isIOS && isWebView) || !hasGetUserMedia || !isSecureContext;
+    
+    // Set the browser support state
+=======
     // Set recommendation based on detected capabilities
     const recommendUpload = !hasMediaRecorder || isIOS || !hasGetUserMedia;
     
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     setBrowserSupport({
       hasGetUserMedia,
       hasMediaRecorder,
@@ -69,13 +93,38 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
       recommendUpload
     });
     
+<<<<<<< HEAD
+    // Log details about the environment for debugging
+    console.log('Browser environment:', {
+      userAgent: navigator.userAgent,
+      isSecureContext,
+      host: window.location.hostname,
+      protocol: window.location.protocol
+    });
+    
+=======
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     console.log('Browser support check:', {
       hasGetUserMedia,
       hasMediaRecorder,
       isIOS,
       isMobile,
+<<<<<<< HEAD
+      isWebView,
       recommendUpload
     });
+    
+    // Log a warning if we're not in a secure context and camera access may be affected
+    if (!isSecureContext && hasGetUserMedia) {
+      console.warn(
+        'Application is not running in a secure context (HTTPS). ' +
+        'Camera access might be restricted. Consider using HTTPS for full functionality.'
+      );
+    }
+=======
+      recommendUpload
+    });
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
   }, []);
 
   // Initialize the camera for preview
@@ -84,6 +133,136 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
       setIsCameraLoading(true);
       setFileError(null);
       
+<<<<<<< HEAD
+      // First, check if permission is already granted or at least asked
+      let permissionStatus;
+      try {
+        // This can fail on some browsers, so wrap in try/catch
+        permissionStatus = await navigator.permissions.query({ name: 'camera' as PermissionName });
+        console.log('Camera permission status:', permissionStatus.state);
+      } catch (permErr) {
+        console.log('Permission API not supported, proceeding anyway');
+      }
+
+      // Ultra-simple constraints first to just get camera access
+      // This improves compatibility across browsers and devices
+      const simpleConstraints = { 
+        video: true, 
+        audio: false 
+      };
+      
+      console.log('Requesting camera with simple constraints:', JSON.stringify(simpleConstraints));
+      console.log('Browser:', navigator.userAgent);
+      console.log('Is secure context?', window.isSecureContext);
+      
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(simpleConstraints);
+        console.log('Camera access granted with simple constraints');
+        
+        // Now try to apply specific constraints if needed
+        if (stream) {
+          // Stop this initial stream, we'll get a better one
+          stream.getTracks().forEach(track => track.stop());
+        }
+        
+        // Now apply more specific constraints for our quality needs
+        // iOS-specific camera constraints
+        // Special case for iPhone in Replit app
+        // Try to give it minimal constraints for better compatibility
+        const constraints = browserSupport.isIOS 
+          ? { 
+              video: { 
+                facingMode: 'user',
+                // For iPhone, deliberately keep a portrait mode aspect ratio
+                width: { ideal: 480 },
+                height: { ideal: 640 }
+              }, 
+              audio: false 
+            }
+          : {
+              video: {
+                facingMode: 'user',
+                // For other devices, ensure portrait mode (9:16 aspect ratio)
+                width: { min: 360, ideal: 540, max: 720 },
+                height: { min: 640, ideal: 960, max: 1280 },
+                aspectRatio: { ideal: 0.5625 } // 9:16 aspect ratio
+              },
+              audio: false
+            };
+        
+        console.log('Requesting camera with quality constraints:', JSON.stringify(constraints));
+        const qualityStream = await navigator.mediaDevices.getUserMedia(constraints);
+        streamRef.current = qualityStream;
+        
+        // Display the camera feed in the video element
+        if (videoRef.current) {
+          try {
+            videoRef.current.srcObject = qualityStream;
+            videoRef.current.muted = true;
+            videoRef.current.playsInline = true;
+            
+            // Play the video without awaiting
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  console.log('Camera preview started successfully');
+                  setCameraActive(true);
+                  setIsCameraLoading(false);
+                })
+                .catch(playErr => {
+                  console.error('Error playing video:', playErr);
+                  // Try without play on iOS
+                  setCameraActive(true);
+                  setIsCameraLoading(false);
+                });
+            } else {
+              console.log('Play promise undefined, assuming success');
+              setCameraActive(true);
+              setIsCameraLoading(false);
+            }
+          } catch (videoErr) {
+            console.error('Error setting video source:', videoErr);
+            setFileError('Error displaying camera feed. Please try again.');
+            setIsCameraLoading(false);
+          }
+        } else {
+          console.error('Video element ref is null');
+          setFileError('Could not initialize video element.');
+          setIsCameraLoading(false);
+        }
+      } catch (streamErr) {
+        console.error('Error getting media stream with specific constraints:', streamErr);
+        // Try with absolute minimum constraints as fallback
+        try {
+          const minimalConstraints = { 
+            video: { 
+              facingMode: 'user' 
+            }, 
+            audio: false 
+          };
+          console.log('Fallback to minimal constraints:', JSON.stringify(minimalConstraints));
+          const fallbackStream = await navigator.mediaDevices.getUserMedia(minimalConstraints);
+          streamRef.current = fallbackStream;
+          
+          if (videoRef.current) {
+            videoRef.current.srcObject = fallbackStream;
+            videoRef.current.muted = true;
+            videoRef.current.playsInline = true;
+            videoRef.current.play().catch(() => {}); // Ignore play errors
+            setCameraActive(true);
+          }
+        } catch (finalErr) {
+          console.error('Final error accessing camera:', finalErr);
+          throw finalErr; // Re-throw to be caught by the outer catch
+        }
+      }
+    } catch (err) {
+      console.error('Error initializing camera:', err);
+      setFileError('Could not access camera. Please make sure you have granted permission and the camera is not in use by another application.');
+      setIsCameraLoading(false);
+    } finally {
+=======
       // iOS-specific camera constraints
       // Special case for iPhone in Replit app
       // Try to give it minimal constraints for better compatibility
@@ -153,6 +332,7 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
     } catch (err) {
       console.error('Error initializing camera:', err);
       setFileError('Could not access camera. Please make sure you have granted permission.');
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
       setIsCameraLoading(false);
     }
   };
@@ -418,12 +598,24 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
   // Handle file upload
   const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+<<<<<<< HEAD
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
+=======
     if (!file) return;
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     
     // Reset previous state
     setVideoSrc(null);
     setFileError(null);
     
+<<<<<<< HEAD
+    console.log('File selected:', file.name, 'Size:', (file.size / (1024 * 1024)).toFixed(2) + 'MB', 'Type:', file.type);
+    
+=======
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     // Check file size
     if (file.size > MAX_FILE_SIZE) {
       setFileError(`File is too large. Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.`);
@@ -436,6 +628,56 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
       return;
     }
     
+<<<<<<< HEAD
+    // Create a video preview URL immediately
+    const objectUrl = URL.createObjectURL(file);
+    console.log('Created object URL for preview:', objectUrl.substring(0, 30) + '...');
+    setVideoSrc(objectUrl);
+    
+    // Now read the file as base64 for actual upload
+    console.log('Reading file as base64 data...');
+    const reader = new FileReader();
+    
+    reader.onloadstart = () => {
+      console.log('File reading started');
+    };
+    
+    reader.onloadend = () => {
+      if (reader.result) {
+        const resultStr = reader.result.toString();
+        console.log('File read completed, data size:', Math.round(resultStr.length / 1024), 'KB');
+        
+        // Call onVideoCapture with the base64 data BEFORE checking videoSrc state
+        // This ensures the parent component gets the data even if state updates are delayed
+        const base64data = reader.result as string;
+        
+        // First explicitly call with the raw data
+        console.log('Calling onVideoCapture with file data');
+        onVideoCapture(base64data);
+        
+        // Then log the current UI state with a delay
+        setTimeout(() => {
+          console.log('After file upload - videoSrc:', !!videoSrc);
+        }, 100);
+      } else {
+        console.error('File read completed but result is null');
+        setFileError('Error processing video. Please try a different video file.');
+      }
+    };
+    reader.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = (event.loaded / event.total) * 100;
+        console.log('File read progress:', percentComplete.toFixed(2) + '%');
+      }
+    };
+    reader.onerror = () => {
+      console.error('Error reading file:', reader.error);
+      setFileError('Error reading file. Please try again.');
+    };
+    
+    // Start reading the file
+    console.log('Starting to read file as Data URL');
+=======
     // Read the file
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -446,6 +688,7 @@ export default function VideoUploader({ onVideoCapture, isUploading = false, err
     reader.onerror = () => {
       setFileError('Error reading file. Please try again.');
     };
+>>>>>>> e45422f1661ed329bef5b88397291abc0d3dbf06
     reader.readAsDataURL(file);
   };
 
