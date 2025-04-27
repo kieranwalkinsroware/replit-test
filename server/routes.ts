@@ -71,20 +71,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       (async () => {
         try {
           console.log("Extracting face from uploaded video...");
-          
-          // Use development mode for local testing (no API calls)
-          const useDevelopmentMode = true;
-          
-          let faceImageUrl;
-          
-          if (useDevelopmentMode) {
-            console.log("Development mode: Simulating face extraction with sample face image");
-            // Use a sample face image URL for development testing
-            faceImageUrl = "https://replicate.delivery/pbxt/Jd7ApHW7KS4qJIZfMYg0A1qM6O1W9enwGkPwn0pJT3K3WHtQA/face.jpg";
-          } else {
-            // Real API call to extract face
-            faceImageUrl = await replicateService.extractFace(videoData, Number(userId));
-          }
+          // Extract face from the uploaded video
+          const faceImageUrl = await replicateService.extractFace(videoData, Number(userId));
           console.log("Face extraction completed successfully");
           
           // Update the user upload with the face image URL and set status to completed
@@ -293,23 +281,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
           console.log("REPLICATE_API_TOKEN is set (length:", process.env.REPLICATE_API_TOKEN.length, "characters)");
           
-          // Use development mode to simulate video generation
-          const useDevelopmentMode = true;
-          
-          let generateResult;
-          
-          if (useDevelopmentMode) {
-            console.log("Development mode: Simulating video generation without API call");
-            // Create a mock prediction ID for tracking
-            generateResult = {
-              id: `dev-${Date.now()}`,
-              status: 'processing'
-            };
-            console.log("Simulated video generation response:", JSON.stringify(generateResult));
-          } else {
-            console.log("Calling Replicate API to generate video...");
-            generateResult = await replicateService.generateVideo(prompt, userIdNum, options);
-          }
+          console.log("Calling Replicate API to generate video...");
+          const generateResult = await replicateService.generateVideo(prompt, userIdNum, options);
           console.log(`Video generation API response:`, JSON.stringify(generateResult));
           
           // Store the prediction ID in the database

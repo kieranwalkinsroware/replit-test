@@ -196,9 +196,8 @@ debugRouter.get('/replicate/test-video-generation', async (req: Request, res: Re
     
     console.log(`[DEBUG] Testing video generation with prompt: "${prompt}" for userId: ${userId}`);
     
-    // For development, we'll use a development mode that simulates video generation
-    // This prevents making real API calls to external services
-    const useDevelopmentMode = true; // Use simulation mode for local testing
+    // This is necessary because our Replicate API token doesn't have permission to use the models we need
+    const useDevelopmentMode = true; // Switch to false when we have proper model access
     
     if (useDevelopmentMode) {
       console.log('[DEBUG] Using development mode for video generation');
